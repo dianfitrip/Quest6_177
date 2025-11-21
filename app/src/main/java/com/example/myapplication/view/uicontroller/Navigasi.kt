@@ -4,13 +4,18 @@ package com.example.myapplication.view.uicontroller
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.myapplication.model.DataJK
 import com.example.myapplication.view.FormIsian
 import com.example.myapplication.view.TampilData
+import com.example.myapplication.viewmodel.SiswaViewModel
 
 enum class Navigasi {
     Formulirku,
@@ -19,25 +24,38 @@ enum class Navigasi {
 
 @Composable
 fun DataApp(
+    // edit 1 : parameter viewModel
+    modifier: Modifier = Modifier,
+    viewModel: SiswaViewModel = viewModel(),
     navController: NavHostController = rememberNavController()
 ){
     Scaffold { isiRuang ->
+        // edit 2 : tambahkan variabel uiState
+        val uiState = viewModel.statusUI.collectAsState()
         NavHost(
             navController = navController,
             startDestination = Navigasi.Formulirku.name,
-            modifier = Modifier.padding(paddingValues = isiRuang)
+            modifier = Modifier.padding(isiRuang)
         ) {
+            // edit 3 : tambahkan variable konteks
+            val konteks = LocalContext.current
             composable(route = Navigasi.Formulirku.name) {
                 FormIsian(
-                    //pilihanJK = JenisJK.map { id -> konteks.resources.getString(id) },
+                    // edit 4 : parameter pilihanJK dan onSubmitButtonClicked
+                    JenisK = DataJK.JenisK.map { id ->
+                        konteks.resources.getString(id)
+                    },
                     OnSubmitBtnClick = {
-                        navController.navigate(route = Navigasi.Detail.name)
+                        viewModel.setSiswa(it)
+                        navController.navigate(Navigasi.Detail.name)
                     }
                 )
             }
             composable(route = Navigasi.Detail.name) {
                 TampilData(
-                    onBackBtnClick = {
+                    // edit 5 : parameter statusUiSiswa
+                    statusUiSiswa = uiState.value,
+                    OnSubmitBtnClick = {
                         cancelAndBackToFormulir(navController)
                     }
                 )
