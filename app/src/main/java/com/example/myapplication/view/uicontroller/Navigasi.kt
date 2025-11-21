@@ -30,7 +30,7 @@ fun DataApp(
     navController: NavHostController = rememberNavController()
 ){
     Scaffold { isiRuang ->
-        // edit 2 : tambahkan variabel uiState
+        // edit 2 : tambahkan variabel uiState.
         val uiState = viewModel.statusUI.collectAsState()
         NavHost(
             navController = navController,
