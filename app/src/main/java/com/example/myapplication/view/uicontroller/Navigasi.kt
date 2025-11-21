@@ -38,13 +38,13 @@ fun DataApp(
             modifier = Modifier.padding(isiRuang)
         ) {
             // edit 3 : tambahkan variable konteks
-            val konteks = LocalContext.current
+
             composable(route = Navigasi.Formulirku.name) {
                 FormIsian(
                     // edit 4 : parameter pilihanJK dan onSubmitButtonClicked
-                    JenisK = DataJK.JenisK.map { id ->
-                        konteks.resources.getString(id)
-                    },
+                    // Karena isinya sudah ["Laki-laki", "Perempuan"] (String)
+                    jenisK = DataJK.JenisK,
+
                     OnSubmitBtnClick = {
                         viewModel.setSiswa(it)
                         navController.navigate(Navigasi.Detail.name)
@@ -55,7 +55,7 @@ fun DataApp(
                 TampilData(
                     // edit 5 : parameter statusUiSiswa
                     statusUiSiswa = uiState.value,
-                    OnSubmitBtnClick = {
+                    onBackBtnClick = {
                         cancelAndBackToFormulir(navController)
                     }
                 )
